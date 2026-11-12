@@ -26,6 +26,25 @@ bootstrap against the three released checkpoints of the public baseline
 (67.13 Acc when averaged) gives +1.15 Acc with a 95% interval of [−0.00, +2.32],
 i.e. at the edge of resolution.
 
+## Dev selection signal
+
+Runs are selected by dev WF1 (MELD: 114 dialogues / 1109 utterances). That
+signal is weak enough that it does not order these variants the way the test
+split does:
+
+| MELD variant | dev WF1 | test Acc | test WF1 |
+|---|---|---|---|
+| frozen stream, no distillation | 65.36 | 66.30 | 65.39 |
+| frozen stream, KD 0.5 | 65.71 | 66.92 | 65.95 |
+| frozen stream, external teacher, KD 0.5 | 66.11 | 66.94 | 66.07 |
+| task-adapted stream, KD 0.5 | 63.95 | 67.14 | 66.31 |
+
+The external-teacher runs look best on dev and tie on test; the task-adapted
+stream looks worst on dev and is best on test. With 1109 dev utterances a
+1.8-point dev gap is inside the noise, so we report the adapted-stream result as
+an ensemble-level observation rather than a dev-selected gain, and the shipped
+default stays the frozen stream.
+
 ## Self-distillation
 
 Soft targets come from an ensemble of three baseline runs and are cached in
@@ -118,10 +137,12 @@ default.
 
 ## Negative results
 
-* A frozen 2048-d last-token hidden state from a 3B instruction-tuned LLM
-  (Qwen2.5-3B-Instruct) is a much weaker text stream than the shipped vectors:
-  49.5% with an utterance-level linear probe after L2 normalisation, versus
-  59.9% for the shipped stream.
+* A frozen last-token hidden state from an instruction-tuned LLM
+  (Qwen2.5-3B-Instruct, 2048-d) is a much weaker text stream than the shipped
+  vectors: 49.5% with an utterance-level linear probe after L2 normalisation,
+  versus 59.9% for the shipped stream. We used the 3B checkpoint rather than the
+  7B one: its weights (≈15 GB) do not fit the free disk, and the 3B probe already
+  trails by ten points.
 * Fine-tuning the text encoder on the *full* corpus instead of the train split
   leaks and is not used.
 * Weights soup across seeds, post-hoc class-bias calibration, and dev-selected
