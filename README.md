@@ -18,8 +18,9 @@ Test split, mean over three seeds (accuracy / weighted-F1).
 
 | dataset | model | Acc | WF1 | notes |
 |---|---|---|---|---|
-| MELD | MERCResidual | 66.92 | 65.95 | + self-distillation, lr 1e-5, 40 epochs |
-| MELD | MERCResidual (3-seed ensemble) | 67.09 | 66.05 | |
+| MELD | MERCResidual | 67.14 | 66.31 | task-adapted text stream, self-distillation, lr 1e-5, 40 epochs |
+| MELD | six-model ensemble | 68.28 | 67.30 | two text streams x 3 seeds |
+| MELD | MERCResidual (frozen features) | 66.92 | 65.95 | original stream, self-distillation |
 | IEMOCAP | MERCGraphMemory | 69.54 | 69.33 | + self-distillation, lr 5e-5, 80 epochs |
 | IEMOCAP | MERCGraphMemory (no distillation) | 68.00 | 67.95 | same recipe, ablation |
 
@@ -84,6 +85,15 @@ python -m merc.train --dataset iemocap --data data/iemocap --model merc_graph_me
 ensembles. Each run writes `summary.json`, `history.json`, `test_predictions.npz`
 and `best.pt` (state dict plus the constructor config).
 
+### Task-adapted text stream (optional, MELD)
+
+`tools/finetune_text.py` fine-tunes DeBERTa-v3 on the utterance labels of the
+training split and dumps 1024-d mean-pooled states as an alternative text stream;
+no other part of the model changes. On MELD this stream plus distillation gives
+67.14 / 66.31, and averaging three seeds of each stream gives 68.28 / 67.30. On
+IEMOCAP the same encoder overfits the sessions and is not used — see
+`results/RESULTS.md`.
+
 ## Ensemble
 
 ```python
@@ -103,6 +113,7 @@ merc/train.py     training / evaluation entry point
 merc/ensemble.py  seed averaging and dialogue-level bootstrap
 results/          tables and analysis
 scripts/          run scripts and feature extraction
+tools/            optional text-encoder fine-tuning
 ```
 
 ## Citation

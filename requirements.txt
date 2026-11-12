@@ -1,3 +1,7 @@
 torch>=2.0
 numpy>=1.24
 scikit-learn>=1.2
+
+# optional: tools/finetune_text.py (task-adapted text stream)
+# transformers==4.46.3
+# sentencepiece

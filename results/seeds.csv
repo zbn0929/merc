@@ -9,3 +9,9 @@ IEMOCAP,1,MERCGraphMemory,69.62,69.32,67.22
 IEMOCAP,2,MERCGraphMemory,69.38,69.17,67.21
 IEMOCAP,mean,MERCGraphMemory,69.54,69.33,67.36
 IEMOCAP,ensemble,MERCGraphMemory,69.93,69.60,
+MELD,0,MERCResidual+adapted-text,67.13,66.38,51.87
+MELD,1,MERCResidual+adapted-text,66.82,66.01,51.17
+MELD,2,MERCResidual+adapted-text,67.47,66.55,51.20
+MELD,mean,MERCResidual+adapted-text,67.14,66.31,51.41
+MELD,ensemble,MERCResidual+adapted-text,67.13,66.37,51.58
+MELD,ensemble6,MERCResidual+adapted-text+original,68.28,67.30,51.95
